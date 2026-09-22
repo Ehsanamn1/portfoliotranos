@@ -1,10 +1,23 @@
+'use client';
+
+import { Hero } from '@/components/Hero';
+import { ProjectsSection } from '@/components/sections/ProjectsSection';
+import { ServicesSection } from '@/components/sections/ServicesSection';
+import { ProcessSection } from '@/components/sections/ProcessSection';
+import { AboutSection } from '@/components/sections/AboutSection';
+import { InsightsSection } from '@/components/sections/InsightsSection';
+import { CTASection } from '@/components/sections/CTASection';
+
 export default function Home() {
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center">
-      <section>
-        <h1 className="text-6xl font-bold">Tranos Studio</h1>
-        <p className="mt-4 text-zinc-400">Ideas into Digital Reality.</p>
-      </section>
-    </main>
+    <>
+      <Hero />
+      <ProjectsSection />
+      <ServicesSection />
+      <ProcessSection />
+      <AboutSection />
+      <InsightsSection />
+      <CTASection />
+    </>
   );
 }
