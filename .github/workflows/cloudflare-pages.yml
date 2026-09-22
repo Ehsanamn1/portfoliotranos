@@ -17,10 +17,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Validate Cloudflare credentials
+        shell: bash
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.cortex1 }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          test -n "${CF_TOKEN}" || { echo "::error::Missing Cloudflare API token in environment cortex1. Expected CLOUDFLARE_API_TOKEN (or secret named cortex1)."; exit 1; }
+          test -n "${CF_ACCOUNT_ID}" || { echo "::error::Missing CLOUDFLARE_ACCOUNT_ID in environment cortex1."; exit 1; }
+          echo "Cloudflare credentials are present."
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.cortex1 }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy . --project-name=portfoliotranos --branch=main --commit-message="Deploy Tranos Studio"
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
