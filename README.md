@@ -1,67 +1,81 @@
 # Tranos Studio
 
-Premium AI / Digital Creative Studio portfolio — luxury, cinematic and future-facing.
+Premium AI / Digital Creative Studio portfolio built with **Next.js + React + TypeScript**.
 
-## Current Published Frontend
+## Current stack
 
-The production-ready visual portfolio is currently published in the repository root as:
+- Next.js 16.3.x
+- React 19.2
+- TypeScript
+- Next.js App Router
+- Static export for Cloudflare Pages
+- CSS design system with responsive layouts and motion
+- GitHub-ready and VibeNest-ready
 
-- `index.html` — primary deployable website entrypoint
-- Responsive layout for desktop, tablet and mobile
-- Luxury dark visual system with gold, violet and cyan accents
-- Animated hero scene and scroll-reveal interactions
-- Work, Services, Process, About, Insights and Contact sections
-- Accessible reduced-motion fallback
-- No build step is required for the root static version
+## Local development
 
-## Deploy
+```bash
+npm install
+npm run dev
+```
 
-For a static host/import workflow, use the repository root as the site source and `index.html` as the entrypoint.
+Production build:
 
-The project is intentionally kept deployment-friendly so it can be imported directly into a hosting platform such as VibeNest.
+```bash
+npm run build
+```
 
-## Repository Structure
+The build output is generated in `out/`.
+
+## Cloudflare Pages
+
+This project is configured for a Next.js static export. Cloudflare's current Pages documentation uses:
+
+- Framework preset: **Next.js (Static HTML Export)**
+- Production branch: `main`
+- Build command: `npx next build`
+- Build directory: `out`
+
+Cloudflare can connect directly to this GitHub repository and automatically rebuild after pushes.
+
+## Project structure
 
 ```text
 .
-├── index.html
+├── package.json
+├── next.config.ts
+├── tsconfig.json
+├── public/
+│   └── favicon.svg
 ├── src/
 │   └── app/
+│       ├── globals.css
+│       ├── layout.tsx
 │       └── page.tsx
-├── AI_CONTEXT.md
 └── .github/
     └── workflows/
-        └── cloudflare-pages.yml
+        └── next-build.yml
 ```
 
-## Design Direction
+## Product roadmap
 
-- Luxury dark cinematic UI
-- Black / graphite base
-- Purple, cyan and gold accents
-- Editorial typography
-- Premium agency aesthetic
-- AI / digital / creative positioning
+The frontend is now a real React/Next.js application rather than the previous standalone HTML entrypoint. The architecture is ready to grow into:
 
-## Planned Full-Stack Modules
-
-The current published site is the frontend/static experience. The full application roadmap remains:
-
-- Next.js + TypeScript application architecture
+- CMS and admin dashboard
 - PostgreSQL + Prisma
-- Secure authentication and role-based admin
-- CMS / content management
-- Project and case-study CRUD
+- Authentication and RBAC
+- Project / case-study CRUD
 - Insights/blog CMS
-- Media library and storage abstraction
-- Admin dashboard
-- API layer, validation and rate limiting
-- Automated tests and production observability
+- Media storage
+- API and server actions
+- AI integrations
+- Automated tests
 
-## Important
+Those backend modules are not claimed as implemented until they are actually added and tested.
 
-Do not place API tokens, database passwords, private keys or other secrets in this repository. Use the hosting platform's environment/secret settings for deployment credentials.
+## Security
 
-## GitHub
+Never commit API tokens, database passwords, private keys or other secrets. Configure deployment credentials in the hosting platform's secrets/environment settings.
 
-Repository: https://github.com/Ehsanamn1/portfoliotranos
+Repository:
+https://github.com/Ehsanamn1/portfoliotranos
