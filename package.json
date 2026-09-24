@@ -15,7 +15,8 @@
     "db:test": "tsx scripts/test-database.ts",
     "build:cloudflare": "opennextjs-cloudflare build",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^7.0.0",
