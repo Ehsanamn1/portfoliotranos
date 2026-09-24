@@ -15,6 +15,13 @@ const projectUpdateSchema = z.object({
   featured: z.boolean().optional(),
   published: z.boolean().optional(),
   imageUrl: z.url().optional().or(z.literal("")).optional(),
+  clientName: z.string().trim().max(200).optional(),
+  role: z.string().trim().max(200).optional(),
+  challenge: z.string().trim().max(5000).optional(),
+  solution: z.string().trim().max(5000).optional(),
+  impact: z.string().trim().max(5000).optional(),
+  technologies: z.string().trim().max(1000).optional(),
+  galleryUrls: z.string().trim().max(5000).optional(),
   sortOrder: z.coerce.number().int().min(0).max(10000).optional()
 });
 
@@ -33,7 +40,17 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
     const data = await prisma.project.update({
       where: { id },
-      data: { ...parsed.data, imageUrl: parsed.data.imageUrl === "" ? null : parsed.data.imageUrl }
+      data: {
+        ...parsed.data,
+        imageUrl: parsed.data.imageUrl === "" ? null : parsed.data.imageUrl,
+        clientName: parsed.data.clientName === "" ? null : parsed.data.clientName,
+        role: parsed.data.role === "" ? null : parsed.data.role,
+        challenge: parsed.data.challenge === "" ? null : parsed.data.challenge,
+        solution: parsed.data.solution === "" ? null : parsed.data.solution,
+        impact: parsed.data.impact === "" ? null : parsed.data.impact,
+        technologies: parsed.data.technologies === "" ? null : parsed.data.technologies,
+        galleryUrls: parsed.data.galleryUrls === "" ? null : parsed.data.galleryUrls
+      }
     });
     return NextResponse.json({ ok: true, data });
   } catch {
