@@ -15,6 +15,13 @@ const projectSchema = z.object({
   featured: z.boolean().optional(),
   published: z.boolean().optional(),
   imageUrl: z.url().optional().or(z.literal("")),
+  clientName: z.string().trim().max(200).optional(),
+  role: z.string().trim().max(200).optional(),
+  challenge: z.string().trim().max(5000).optional(),
+  solution: z.string().trim().max(5000).optional(),
+  impact: z.string().trim().max(5000).optional(),
+  technologies: z.string().trim().max(1000).optional(),
+  galleryUrls: z.string().trim().max(5000).optional(),
   sortOrder: z.coerce.number().int().min(0).max(10000).optional()
 });
 
@@ -49,6 +56,13 @@ export async function POST(request: Request) {
       data: {
         ...parsed.data,
         imageUrl: parsed.data.imageUrl || null,
+        clientName: parsed.data.clientName || null,
+        role: parsed.data.role || null,
+        challenge: parsed.data.challenge || null,
+        solution: parsed.data.solution || null,
+        impact: parsed.data.impact || null,
+        technologies: parsed.data.technologies || null,
+        galleryUrls: parsed.data.galleryUrls || null,
         featured: parsed.data.featured ?? false,
         published: parsed.data.published ?? true,
         sortOrder: parsed.data.sortOrder ?? 0
