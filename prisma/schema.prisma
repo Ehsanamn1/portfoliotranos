@@ -32,6 +32,13 @@ model Project {
   featured    Boolean  @default(false)
   published   Boolean  @default(true)
   imageUrl    String?
+  clientName  String?
+  role        String?
+  challenge   String?
+  solution    String?
+  impact      String?
+  technologies String?
+  galleryUrls String?
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
