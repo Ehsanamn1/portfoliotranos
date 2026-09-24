@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { HeroVisual } from "./hero-visual";
 
 const services = [
@@ -27,7 +27,6 @@ export default function Home() {
   const [insights, setInsights] = useState<string[][]>(fallbackInsights);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState<string | null>(null);
-  const pageRef = useRef<HTMLElement | null>(null);
 
   async function handleContactSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -111,7 +110,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main id="top" ref={pageRef}>
+      <main id="top">
         <section className="hero">
           <div className="heroLeft">
             <div className="container heroIn">
