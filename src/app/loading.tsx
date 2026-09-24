@@ -1,0 +1,1 @@
+export default function Loading(){return <main className="tx-loading"><div className="tx-loading-mark">TR<span>.</span></div><div className="tx-loading-line"><i/></div><small>TRANOS / CREATIVE ENGINE</small></main>;}
