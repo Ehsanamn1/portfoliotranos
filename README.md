@@ -1,81 +1,103 @@
 # Tranos Studio
 
-Premium AI / Digital Creative Studio portfolio built with **Next.js + React + TypeScript**.
+Premium AI / Digital Creative Studio built with **Next.js + React + TypeScript**, now with a real PostgreSQL/Prisma backend.
 
-## Current stack
+## Stack
 
-- Next.js 16.3.x
-- React 19.2
+- Next.js 16 App Router
+- React 19
 - TypeScript
-- Next.js App Router
-- Static export for Cloudflare Pages
-- CSS design system with responsive layouts and motion
-- GitHub-ready and VibeNest-ready
+- PostgreSQL
+- Prisma 7 + PostgreSQL adapter
+- Zod validation
+- Cookie-based admin sessions
+- Cloudflare Workers + OpenNext
+- GitHub Actions build checks
 
-## Local development
+## Backend now included
+
+### Database
+
+Prisma models are defined for:
+
+- Contact messages / leads
+- Projects
+- Insights
+- Admin users
+- Admin sessions
+
+Migration files live under `prisma/migrations/`.
+
+### API
+
+- `GET /api/health` — application/database health
+- `POST /api/contact` — validated contact submission persisted to PostgreSQL
+- `GET /api/projects` — published projects
+- `GET /api/insights` — published insights
+- `POST /api/auth/login` — admin login with hashed passwords
+- `POST /api/auth/logout` — destroy current admin session
+- `GET /api/admin/messages` — authenticated admin access to contact leads
+
+### Security foundations
+
+- Password hashing with bcrypt
+- HTTP-only session cookie
+- Secure cookie settings in production
+- Session expiry and server-side session storage
+- Zod request validation
+- Secrets kept out of Git
+
+## Environment
+
+Copy `.env.example` to your local environment and set:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public"
+ADMIN_EMAIL="admin@example.com"
+ADMIN_PASSWORD="change-this-before-production"
+```
+
+Run:
 
 ```bash
 npm install
+npm run db:migrate
+npm run db:seed
 npm run dev
 ```
 
-Production build:
+Database test:
+
+```bash
+npm run db:test
+```
+
+## Cloudflare
+
+The project is no longer configured as a static Next.js export because the backend needs server runtime support.
+
+Cloudflare's current guidance supports full-stack Next.js on Workers. This repository uses the documented OpenNext path with `nodejs_compat`, while Cloudflare currently recommends vinext for new Next.js-on-Workers applications. citeturn843501search0turn592386search0
+
+Cloudflare runtime config is in `wrangler.jsonc` and `open-next.config.ts`.
+
+Required production secret:
+
+```env
+DATABASE_URL=...
+```
+
+Admin credentials should also be supplied through the hosting platform's secret/environment settings.
+
+## Build
 
 ```bash
 npm run build
+npm run build:cloudflare
 ```
 
-The build output is generated in `out/`.
+## Important
 
-## Cloudflare Pages
-
-This project is configured for a Next.js static export. Cloudflare's current Pages documentation uses:
-
-- Framework preset: **Next.js (Static HTML Export)**
-- Production branch: `main`
-- Build command: `npx next build`
-- Build directory: `out`
-
-Cloudflare can connect directly to this GitHub repository and automatically rebuild after pushes.
-
-## Project structure
-
-```text
-.
-├── package.json
-├── next.config.ts
-├── tsconfig.json
-├── public/
-│   └── favicon.svg
-├── src/
-│   └── app/
-│       ├── globals.css
-│       ├── layout.tsx
-│       └── page.tsx
-└── .github/
-    └── workflows/
-        └── next-build.yml
-```
-
-## Product roadmap
-
-The frontend is now a real React/Next.js application rather than the previous standalone HTML entrypoint. The architecture is ready to grow into:
-
-- CMS and admin dashboard
-- PostgreSQL + Prisma
-- Authentication and RBAC
-- Project / case-study CRUD
-- Insights/blog CMS
-- Media storage
-- API and server actions
-- AI integrations
-- Automated tests
-
-Those backend modules are not claimed as implemented until they are actually added and tested.
-
-## Security
-
-Never commit API tokens, database passwords, private keys or other secrets. Configure deployment credentials in the hosting platform's secrets/environment settings.
+The repository now contains the backend architecture and API implementation. A live PostgreSQL database is still required before the backend can accept production data.
 
 Repository:
 https://github.com/Ehsanamn1/portfoliotranos
