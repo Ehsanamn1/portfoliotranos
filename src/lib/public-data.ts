@@ -1,8 +1,9 @@
 import getPrisma from "@/lib/prisma";
 
 export type PublicProject = {
-  id: string; slug: string; title: string; description: string;
-  category: string; year: number; featured: boolean; imageUrl: string | null;
+  id:string; slug:string; title:string; description:string; category:string; year:number;
+  featured:boolean; imageUrl:string|null; clientName:string|null; role:string|null; challenge:string|null;
+  solution:string|null; impact:string|null; technologies:string|null; galleryUrls:string|null;
 };
 export type PublicInsight = {
   id: string; slug: string; title: string; excerpt: string;
@@ -24,7 +25,7 @@ export async function getPublicProjects(limit?:number){
   try{
     return await getPrisma().project.findMany({
       where:{published:true},orderBy:[{featured:"desc"},{sortOrder:"asc"},{createdAt:"desc"}],take:limit,
-      select:{id:true,slug:true,title:true,description:true,category:true,year:true,featured:true,imageUrl:true}
+      select:{id:true,slug:true,title:true,description:true,category:true,year:true,featured:true,imageUrl:true,clientName:true,role:true,challenge:true,solution:true,impact:true,technologies:true,galleryUrls:true}
     });
   }catch{return limit?fallbackProjects.slice(0,limit):fallbackProjects;}
 }
