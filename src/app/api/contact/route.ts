@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import getPrisma from "@/lib/prisma";
 import { contactMessageSchema } from "@/lib/validation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const prisma = getPrisma();
   try {
     const body: unknown = await request.json();
     const parsed = contactMessageSchema.safeParse(body);
