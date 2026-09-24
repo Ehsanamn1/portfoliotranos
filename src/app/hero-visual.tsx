@@ -14,6 +14,7 @@ export function HeroVisual() {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const pointer = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
+  const orbRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -58,6 +59,10 @@ export function HeroVisual() {
 
       pointer.current.x += (pointer.current.targetX - pointer.current.x) * 0.055;
       pointer.current.y += (pointer.current.targetY - pointer.current.y) * 0.055;
+      if (orbRef.current) {
+        orbRef.current.style.setProperty("--orb-x", pointer.current.x.toString());
+        orbRef.current.style.setProperty("--orb-y", pointer.current.y.toString());
+      }
 
       const px = pointer.current.x * 18;
       const py = pointer.current.y * 14;
@@ -223,12 +228,7 @@ export function HeroVisual() {
       <canvas ref={canvasRef} />
       <div className="visualScan" />
       <div className="visualVignette" />
-      <div
-        className="aiOrb"
-        style={{
-          transform: "translate3d(calc(var(--orb-x) * 18px), calc(var(--orb-y) * 12px), 0) rotateX(calc(var(--orb-y) * -8deg)) rotateY(calc(var(--orb-x) * 10deg))"
-        }}
-      >
+      <div className="aiOrb" ref={orbRef}>
         <div className="orbAtmosphere" />
         <div className="orbRing orbRingA" />
         <div className="orbRing orbRingB" />
