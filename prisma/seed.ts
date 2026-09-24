@@ -1,4 +1,5 @@
 import "dotenv/config";
+import bcrypt from "bcryptjs";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
@@ -26,5 +27,18 @@ async function main() {
     ],
     skipDuplicates:true
   });
+
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (adminEmail && adminPassword) {
+    const passwordHash = await bcrypt.hash(adminPassword, 12);
+    await prisma.adminUser.upsert({
+      where: { email: adminEmail },
+      update: { passwordHash },
+      create: { email: adminEmail, passwordHash, role: "ADMIN" }
+    });
+  }
 }
+
 main().catch(console.error).finally(() => prisma.$disconnect());
