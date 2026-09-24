@@ -171,3 +171,8 @@ html[data-theme="light"] .tx-tech-strip,html[data-theme="light"] .tx-case-galler
 .tx-insight-cover{aspect-ratio:16/6.5;border:1px solid var(--tx-border);background-size:cover;background-position:center;margin:46px 0 70px}.tx-insight-detail-grid{padding-bottom:110px}.tx-insight-detail-grid aside{padding-top:8px}
 html[data-theme="light"] .tx-insight-cover{border-color:rgba(0,0,0,.08)}
 @media(max-width:760px){.tx-insight-cover{aspect-ratio:1.25;margin:30px 0 46px}}
+
+html[dir="rtl"] .tx-mobile-bottom-nav{direction:rtl}html[dir="rtl"] .tx-mobile-bottom-nav a{font-family:"Vazirmatn",sans-serif}
+html[data-theme="light"] .tx-mobile-menu-inner{background:rgba(246,245,241,.98)}html[data-theme="light"] .tx-mobile-menu a{border-color:rgba(0,0,0,.06);color:#111}html[data-theme="light"] .tx-menu-button span{background:#111}
+.tx-menu-button{transition:transform .25s}.tx-menu-button:hover{transform:scale(1.05)}
+.tx-theme-toggle span{transition:transform .25s,background .25s}.tx-theme-toggle span.is-active{transform:scale(1.05)}
