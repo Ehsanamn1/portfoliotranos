@@ -27,3 +27,12 @@ Do not replace the visual identity with generic templates.
 - Hero now combines Canvas particles/network geometry with CSS 3D-style orbital layers, scan motion, and pointer parallax.
 - The implementation avoids introducing a heavy 3D dependency and remains compatible with the existing Next.js + Cloudflare Workers architecture.
 - Reduced-motion users receive a static presentation with animations disabled.
+
+## 2026-09-24 — Tranos Studio production experience layer
+- Added responsive corporate studio pages: Work, Services, About, Insights, Contact, project case studies and branded loading/404 states.
+- Added dark/light theme switching and EN/FA/ES/DE locale support with RTL for Persian.
+- Added four-item mobile bottom navigation.
+- Added cinematic case-study 3D stage with pointer parallax, concept SVG artwork, metrics, Challenge/Solution/Impact, technologies and gallery.
+- Expanded Prisma CMS with Services, SiteSetting and rich Project case-study fields.
+- Expanded Control Center with Projects, Insights, Services, Site Settings and Messages management.
+- Added deploy-time Prisma migration/seed step when production Cloudflare/database/admin secrets are configured.
