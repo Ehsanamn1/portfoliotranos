@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 type Message={id:string;name:string;email:string;company:string|null;projectType:string|null;message:string;status:"NEW"|"READ"|"REPLIED"|"ARCHIVED";createdAt:string};
-type Project={id:string;slug:string;title:string;description:string;category:string;year:number;featured:boolean;published:boolean;imageUrl:string|null;sortOrder:number};
+type Project={id:string;slug:string;title:string;description:string;category:string;year:number;featured:boolean;published:boolean;imageUrl:string|null;clientName:string|null;role:string|null;challenge:string|null;solution:string|null;impact:string|null;technologies:string|null;galleryUrls:string|null;sortOrder:number};
 type Insight={id:string;slug:string;title:string;excerpt:string;content:string;coverImageUrl:string|null;published:boolean;publishedAt:string|null};
 type Service={id:string;slug:string;number:string;title:string;description:string;capabilities:string|null;sortOrder:number;published:boolean};
 type Settings={id:string;brandName:string;tagline:string;heroTitle:string;heroDescription:string;email:string;location:string;footerNote:string;linkedinUrl:string|null;instagramUrl:string|null;behanceUrl:string|null;dribbbleUrl:string|null;defaultLocale:"en"|"fa"|"es"|"de";defaultTheme:"dark"|"light"};
@@ -17,7 +17,7 @@ export default function AdminDashboard({email}:{email:string}){
  const [messages,setMessages]=useState<Message[]>([]),[projects,setProjects]=useState<Project[]>([]),[insights,setInsights]=useState<Insight[]>([]),[services,setServices]=useState<Service[]>([]);
  const [settings,setSettings]=useState<Settings>(blankSettings);
  const [tab,setTab]=useState<"overview"|"projects"|"insights"|"services"|"settings"|"messages">("overview"),[notice,setNotice]=useState(""),[busy,setBusy]=useState(false);
- const [projectForm,setProjectForm]=useState({id:"",slug:"",title:"",description:"",category:"Digital Product",year:new Date().getFullYear(),featured:false,published:true,imageUrl:"",sortOrder:0});
+ const [projectForm,setProjectForm]=useState({id:"",slug:"",title:"",description:"",category:"Digital Product",year:new Date().getFullYear(),featured:false,published:true,imageUrl:"",clientName:"",role:"",challenge:"",solution:"",impact:"",technologies:"",galleryUrls:"",sortOrder:0});
  const [insightForm,setInsightForm]=useState({id:"",slug:"",title:"",excerpt:"",content:"",coverImageUrl:"",published:false,publishedAt:""});
  const [serviceForm,setServiceForm]=useState({id:"",slug:"",number:"01",title:"",description:"",capabilities:"",sortOrder:0,published:true});
 
@@ -31,7 +31,7 @@ export default function AdminDashboard({email}:{email:string}){
  }
  useEffect(()=>{void load();},[]);
  const unread=useMemo(()=>messages.filter(x=>x.status==="NEW").length,[messages]);const publishedProjects=useMemo(()=>projects.filter(x=>x.published).length,[projects]);const publishedInsights=useMemo(()=>insights.filter(x=>x.published).length,[insights]);
- function newProject(){setProjectForm({id:"",slug:"",title:"",description:"",category:"Digital Product",year:new Date().getFullYear(),featured:false,published:true,imageUrl:"",sortOrder:0});setTab("projects");}
+ function newProject(){setProjectForm({id:"",slug:"",title:"",description:"",category:"Digital Product",year:new Date().getFullYear(),featured:false,published:true,imageUrl:"",clientName:"",role:"",challenge:"",solution:"",impact:"",technologies:"",galleryUrls:"",sortOrder:0});setTab("projects");}
  function editProject(x:Project){setProjectForm({...x,imageUrl:x.imageUrl||""});setTab("projects");window.scrollTo({top:0,behavior:"smooth"});}
  async function saveProject(event:FormEvent){event.preventDefault();try{setBusy(true);const payload={...projectForm,slug:projectForm.slug||slugify(projectForm.title)};if(projectForm.id){await api(`/api/admin/projects/${projectForm.id}`,{method:"PATCH",body:JSON.stringify(payload)});setNotice("Project updated.");}else{await api("/api/admin/projects",{method:"POST",body:JSON.stringify(payload)});setNotice("Project created and synced to the public site.");}await load();newProject();}catch(error){setNotice(error instanceof Error?error.message:"Unable to save project.");}finally{setBusy(false);}}
  function newInsight(){setInsightForm({id:"",slug:"",title:"",excerpt:"",content:"",coverImageUrl:"",published:false,publishedAt:""});setTab("insights");}
@@ -67,6 +67,13 @@ export default function AdminDashboard({email}:{email:string}){
    <label>Category<input value={projectForm.category} onChange={e=>setProjectForm({...projectForm,category:e.target.value})} required/></label><label>Year<input type="number" value={projectForm.year} onChange={e=>setProjectForm({...projectForm,year:Number(e.target.value)})} required/></label>
    <label className="wide">Description<textarea value={projectForm.description} onChange={e=>setProjectForm({...projectForm,description:e.target.value})} required/></label>
    <label className="wide">Image URL<input value={projectForm.imageUrl} onChange={e=>setProjectForm({...projectForm,imageUrl:e.target.value})} placeholder="/work/project.svg or https://..."/></label>
+   <label>Client / concept<input value={projectForm.clientName} onChange={e=>setProjectForm({...projectForm,clientName:e.target.value})}/></label>
+   <label>Role<input value={projectForm.role} onChange={e=>setProjectForm({...projectForm,role:e.target.value})}/></label>
+   <label className="wide">Challenge<textarea value={projectForm.challenge} onChange={e=>setProjectForm({...projectForm,challenge:e.target.value})}/></label>
+   <label className="wide">Solution<textarea value={projectForm.solution} onChange={e=>setProjectForm({...projectForm,solution:e.target.value})}/></label>
+   <label className="wide">Impact<textarea value={projectForm.impact} onChange={e=>setProjectForm({...projectForm,impact:e.target.value})}/></label>
+   <label className="wide">Technologies<input value={projectForm.technologies} onChange={e=>setProjectForm({...projectForm,technologies:e.target.value})} placeholder="Next.js|AI|Motion"/></label>
+   <label className="wide">Gallery URLs<input value={projectForm.galleryUrls} onChange={e=>setProjectForm({...projectForm,galleryUrls:e.target.value})} placeholder="/work/project.svg|https://..."/></label>
    <label>Sort order<input type="number" value={projectForm.sortOrder} onChange={e=>setProjectForm({...projectForm,sortOrder:Number(e.target.value)})}/></label>
    <label className="check"><input type="checkbox" checked={projectForm.featured} onChange={e=>setProjectForm({...projectForm,featured:e.target.checked})}/> Featured</label><label className="check"><input type="checkbox" checked={projectForm.published} onChange={e=>setProjectForm({...projectForm,published:e.target.checked})}/> Published</label>
   </div><button className="tx-button tx-button-gold" disabled={busy}>{busy?"Saving...":projectForm.id?"Update project ↗":"Create project ↗"}</button></form>
