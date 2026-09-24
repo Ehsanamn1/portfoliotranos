@@ -51,6 +51,18 @@ jobs:
             echo "::warning::Cloudflare account secrets are not available; using a temporary public deployment."
           fi
 
+      - name: Apply database migrations and seed CMS
+        if: steps.cf.outputs.available == 'true' && env.DATABASE_URL != '' && env.ADMIN_PASSWORD != ''
+        shell: bash
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          npx prisma migrate deploy
+          npx prisma db seed
+
       - name: Deploy to the connected Cloudflare account
         if: steps.cf.outputs.available == 'true'
         uses: cloudflare/wrangler-action@v4
