@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { getLocaleFromCookie, localeMeta } from "@/lib/i18n";
 import MobileBottomNav from "@/components/mobile-bottom-nav";
+import { getSiteSettings } from "@/lib/public-data";
 import SitePreferences from "@/components/site-preferences";
 
 const siteUrl=process.env.NEXT_PUBLIC_SITE_URL||"https://portfoliotranos.wandering-wedelia-b71.workers.dev";
@@ -19,5 +20,6 @@ export const metadata:Metadata={
 
 export default async function RootLayout({children}:{children:React.ReactNode}){
  const locale=await getLocaleFromCookie();
- return <html lang={locale} dir={localeMeta[locale].dir} data-theme="dark"><body>{children}<SitePreferences/><MobileBottomNav/></body></html>;
+ const settings=await getSiteSettings();
+ return <html lang={locale} dir={localeMeta[locale].dir} data-theme={settings.defaultTheme==="light"?"light":"dark"}><body>{children}<SitePreferences/><MobileBottomNav/></body></html>;
 }
