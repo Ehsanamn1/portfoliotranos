@@ -26,6 +26,7 @@ export default function Home() {
   const [insights, setInsights] = useState<string[][]>(fallbackInsights);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState<string | null>(null);
+  const [pointer, setPointer] = useState({ x: 50, y: 50 });
 
   async function handleContactSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
