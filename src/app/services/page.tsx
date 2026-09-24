@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
-
+import { getPublicServices } from "@/lib/public-data";
+import { getLocaleFromCookie, t } from "@/lib/i18n";
 export const metadata:Metadata={title:"Services — Tranos Studio",description:"Digital products, AI systems, brand identity, motion and digital strategy."};
-const services=[
-["01","Digital Products","Design and engineering for high-performance websites, platforms and product experiences.",["UX / UI","Frontend","Backend","CMS","Cloud"]],
-["02","AI Systems","Turn AI from a feature into a useful part of the product and the workflow around it.",["AI UX","Automation","Agents","Integrations","Data workflows"]],
-["03","Brand & Identity","Build a distinctive system that can scale from a first impression to a full digital ecosystem.",["Positioning","Identity","Art direction","Design systems","Launch assets"]],
-["04","3D & Motion","Add depth, motion and cinematic storytelling without sacrificing speed or usability.",["Motion design","3D scenes","Interactive visuals","Prototyping","Creative code"]],
-["05","Digital Strategy","Clarify what to build, why it matters and what needs to happen after launch.",["Discovery","Product strategy","Content","Roadmaps","Optimization"]]
-];
-export default function ServicesPage(){
- return <><SiteHeader/><main className="tx-inner-page"><section className="tx-page-hero"><div className="tx-shell tx-page-hero-grid"><div><div className="tx-kicker"><span/>Capabilities</div><h1>Design, technology<br/><em>and intelligence.</em></h1></div><p>One studio across the full digital stack—from the first strategic question to the last interaction.</p></div></section>
- <section className="tx-section"><div className="tx-shell"><div className="tx-service-detail-list">{services.map(([number,title,description,tags])=><article key={number}><span className="tx-service-detail-number">{number}</span><div><h2>{title}</h2><p>{description}</p><div>{(tags as string[]).map(tag=><span key={tag}>{tag}</span>)}</div></div></article>)}</div></div></section></main><SiteFooter/></>;
+export const dynamic="force-dynamic";
+export default async function ServicesPage(){
+ const locale=await getLocaleFromCookie();const tr=(key:Parameters<typeof t>[1])=>t(locale,key);const services=await getPublicServices();
+ return <><SiteHeader/><main className="tx-inner-page"><section className="tx-page-hero"><div className="tx-shell tx-page-hero-grid"><div><div className="tx-kicker"><span/>{tr("capabilities")}</div><h1>{locale==="fa"?"طراحی، فناوری و هوشمندی.":locale==="es"?"Diseño, tecnología e inteligencia.":locale==="de"?"Design, Technologie und Intelligenz.":"Design, technology and intelligence."}</h1></div><p>{locale==="fa"?"یک استودیو برای کل زنجیره دیجیتال؛ از سؤال استراتژیک اول تا آخرین تعامل.":"One studio across the full digital stack—from the first strategic question to the last interaction."}</p></div></section><section className="tx-section"><div className="tx-shell"><div className="tx-service-detail-list">{services.map(x=><article key={x.id}><span className="tx-service-detail-number">{x.number}</span><div><h2>{x.title}</h2><p>{x.description}</p><div>{(x.capabilities||"").split("|").filter(Boolean).map(tag=><span key={tag}>{tag}</span>)}</div></div></article>)}</div></div></section></main><SiteFooter/></>;
 }
