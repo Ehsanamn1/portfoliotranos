@@ -24,5 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Production build
+      - name: Next.js production build
         run: npm run build
+
+      - name: Cloudflare OpenNext build
+        run: npm run build:cloudflare
