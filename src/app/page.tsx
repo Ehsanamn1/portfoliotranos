@@ -2,12 +2,6 @@
 
 import { FormEvent, useEffect, useState } from "react";
 
-const projects = [
-  ["Tranos AI", "AI product experience and web platform.", "AI Product · 2026"],
-  ["Brand System", "Identity and digital presence for a modern technology brand.", "Branding · 2026"],
-  ["Atlas Commerce", "Commerce platform with automation at the core.", "E-commerce · 2026"]
-];
-
 const services = [
   ["01", "Web Development", "Modern, scalable and high-performance web applications."],
   ["02", "UI / UX Design", "User-centered digital experiences with strong visual systems."],
@@ -18,6 +12,18 @@ const services = [
 ];
 
 export default function Home() {
+  const fallbackProjects = [
+    ["Tranos AI", "AI product experience and web platform.", "AI Product · 2026"],
+    ["Brand System", "Identity and digital presence for a modern technology brand.", "Branding · 2026"],
+    ["Atlas Commerce", "Commerce platform with automation at the core.", "E-commerce · 2026"]
+  ];
+  const fallbackInsights = [
+    ["The Future of AI Products", "How intelligent systems are changing digital product design."],
+    ["Minimalism in Web Design", "Why restraint and typography can create stronger interfaces."],
+    ["Building a Digital Brand", "Positioning, identity and systems for modern companies."]
+  ];
+  const [projects, setProjects] = useState<string[][]>(fallbackProjects);
+  const [insights, setInsights] = useState<string[][]>(fallbackInsights);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState<string | null>(null);
 
@@ -58,6 +64,25 @@ export default function Home() {
   }
 
   useEffect(() => {
+    void Promise.all([
+      fetch("/api/projects").then((r) => r.ok ? r.json() : null),
+      fetch("/api/insights").then((r) => r.ok ? r.json() : null)
+    ]).then(([projectResponse, insightResponse]) => {
+      if (projectResponse?.data?.length) {
+        setProjects(projectResponse.data.map((item: { title: string; description: string; category: string; year: number }) => [
+          item.title,
+          item.description,
+          item.category + " · " + item.year
+        ]));
+      }
+      if (insightResponse?.data?.length) {
+        setInsights(insightResponse.data.map((item: { title: string; excerpt: string }) => [
+          item.title,
+          item.excerpt
+        ]));
+      }
+    }).catch(() => undefined);
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -174,11 +199,7 @@ export default function Home() {
           <div className="container reveal">
             <div className="eyebrow">Insights</div><h2 className="title">Latest Thinking</h2>
             <div className="grid3">
-              {[
-                ["The Future of AI Products", "How intelligent systems are changing digital product design."],
-                ["Minimalism in Web Design", "Why restraint and typography can create stronger interfaces."],
-                ["Building a Digital Brand", "Positioning, identity and systems for modern companies."]
-              ].map(([title, description], index) => (
+              {insights.map(([title, description], index) => (
                 <article className="card" key={title}>
                   <div className={`visual insight-${index + 1}`} /><h3>{title}</h3><p>{description}</p>
                 </article>
