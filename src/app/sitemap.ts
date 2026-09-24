@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-export default function sitemap():MetadataRoute.Sitemap{
+export default function sitemap(): MetadataRoute.Sitemap {
  const base=process.env.NEXT_PUBLIC_SITE_URL||"https://portfoliotranos.wandering-wedelia-b71.workers.dev";
  return [
   {url:base,lastModified:new Date()},
