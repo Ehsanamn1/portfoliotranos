@@ -11,9 +11,9 @@ export type PublicInsight = {
 };
 
 const fallbackProjects: PublicProject[]=[
-  {id:"fallback-tranos-ai",slug:"tranos-ai",title:"Tranos AI",description:"AI product experience and digital platform.",category:"AI Product",year:2026,featured:true,imageUrl:null},
-  {id:"fallback-brand",slug:"brand-system",title:"Brand System",description:"Identity and digital presence for a technology-first brand.",category:"Branding",year:2026,featured:false,imageUrl:null},
-  {id:"fallback-atlas",slug:"atlas-commerce",title:"Atlas Commerce",description:"Commerce experience with automation at the core.",category:"E-commerce",year:2026,featured:false,imageUrl:null}
+  {id:"fallback-tranos-ai",slug:"tranos-ai",title:"Tranos AI",description:"AI product experience and digital platform.",category:"AI Product",year:2026,featured:true,imageUrl:null,clientName:null,role:null,challenge:null,solution:null,impact:null,technologies:null,galleryUrls:null},
+  {id:"fallback-brand",slug:"brand-system",title:"Brand System",description:"Identity and digital presence for a technology-first brand.",category:"Branding",year:2026,featured:false,imageUrl:null,clientName:null,role:null,challenge:null,solution:null,impact:null,technologies:null,galleryUrls:null},
+  {id:"fallback-atlas",slug:"atlas-commerce",title:"Atlas Commerce",description:"Commerce experience with automation at the core.",category:"E-commerce",year:2026,featured:false,imageUrl:null,clientName:null,role:null,challenge:null,solution:null,impact:null,technologies:null,galleryUrls:null}
 ];
 const fallbackInsights: PublicInsight[]=[
   {id:"fallback-ai",slug:"future-of-ai-products",title:"The Future of AI Products",excerpt:"How intelligent systems are changing digital product design.",content:"Publish the real article from the Tranos Control Center.",coverImageUrl:null,publishedAt:null},
@@ -30,7 +30,7 @@ export async function getPublicProjects(limit?:number){
   }catch{return limit?fallbackProjects.slice(0,limit):fallbackProjects;}
 }
 export async function getPublicProject(slug:string){
-  try{return await getPrisma().project.findFirst({where:{slug,published:true},select:{id:true,slug:true,title:true,description:true,category:true,year:true,featured:true,imageUrl:true}});}
+  try{return await getPrisma().project.findFirst({where:{slug,published:true},select:{id:true,slug:true,title:true,description:true,category:true,year:true,featured:true,imageUrl:true,clientName:true,role:true,challenge:true,solution:true,impact:true,technologies:true,galleryUrls:true}});}
   catch{return fallbackProjects.find(x=>x.slug===slug)??null;}
 }
 export async function getPublicInsights(limit?:number){
