@@ -1,6 +1,6 @@
 "use client";
 
-import { PointerEvent, useRef } from "react";
+import { PointerEvent, useRef, type CSSProperties } from "react";
 
 export default function CaseStudyStage({title,category,imageUrl}:{title:string;category:string;imageUrl?:string|null}){
  const ref=useRef<HTMLDivElement|null>(null);
@@ -14,7 +14,7 @@ export default function CaseStudyStage({title,category,imageUrl}:{title:string;c
  return <div className="case-stage" ref={ref} onPointerMove={move} onPointerLeave={leave}>
   <div className="case-stage-grid"/>
   <div className="case-stage-glow"/>
-  <div className="case-browser" style={{"--image":`url(${image})`} as React.CSSProperties}>
+  <div className="case-browser" style={{"--image":`url(${image})`} as CSSProperties}>
    <div className="case-browser-top"><span/><span/><span/><b>TR / CASE STUDY</b></div>
    <div className="case-browser-screen">
     <div className="case-screen-image"/>
