@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 const projects = [
   ["Tranos AI", "AI product experience and web platform.", "AI Product · 2026"],
@@ -18,6 +18,45 @@ const services = [
 ];
 
 export default function Home() {
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState<string | null>(null);
+
+  async function handleContactSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSending(true);
+    setSent(null);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          email: formData.get("email"),
+          company: formData.get("company") || undefined,
+          projectType: formData.get("projectType") || undefined,
+          message: formData.get("message")
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to send message.");
+      }
+
+      form.reset();
+      setSent("Message received. We will get back to you soon.");
+    } catch (error) {
+      setSent(error instanceof Error ? error.message : "Unable to send message.");
+    } finally {
+      setSending(false);
+    }
+  }
+
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -166,7 +205,7 @@ export default function Home() {
                 <div className="detail"><small>Email</small><a href="mailto:hello@tranos.studio">hello@tranos.studio</a></div>
                 <div className="detail"><small>Location</small><span>Tehran, Iran</span></div>
               </div>
-              <form action="mailto:hello@tranos.studio" method="post" encType="text/plain">
+              <form onSubmit={handleContactSubmit}>
                 <div className="fields">
                   <input name="name" placeholder="Your Name" required />
                   <input name="email" type="email" placeholder="Your Email" required />
@@ -176,7 +215,8 @@ export default function Home() {
                   </select>
                   <textarea className="full" name="message" placeholder="Your Message" required />
                 </div>
-                <button className="btn primary formButton" type="submit">Send Message ↗</button>
+                <button className="btn primary formButton" type="submit" disabled={sending}>{sending ? "Sending…" : "Send Message ↗"}</button>
+                {sent ? <p className="formStatus" role="status">{sent}</p> : null}
               </form>
             </div>
           </div>
