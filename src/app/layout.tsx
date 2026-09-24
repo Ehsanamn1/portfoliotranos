@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { getLocaleFromCookie, localeMeta } from "@/lib/i18n";
+import MobileBottomNav from "@/components/mobile-bottom-nav";
+import SitePreferences from "@/components/site-preferences";
 
 const siteUrl=process.env.NEXT_PUBLIC_SITE_URL||"https://portfoliotranos.wandering-wedelia-b71.workers.dev";
 
@@ -14,6 +17,7 @@ export const metadata:Metadata={
   twitter:{card:"summary_large_image",title:"Tranos Studio — Digital / AI / Creative",description:"Premium digital products, intelligent systems and visual identities."}
 };
 
-export default function RootLayout({children}:{children:React.ReactNode}){
- return <html lang="en"><body>{children}</body></html>;
+export default async function RootLayout({children}:{children:React.ReactNode}){
+ const locale=await getLocaleFromCookie();
+ return <html lang={locale} dir={localeMeta[locale].dir} data-theme="dark"><body>{children}<SitePreferences/><MobileBottomNav/></body></html>;
 }
