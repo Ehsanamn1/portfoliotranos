@@ -44,3 +44,47 @@ export async function getPublicInsight(slug:string){
   try{return await getPrisma().insight.findFirst({where:{slug,published:true},select:{id:true,slug:true,title:true,excerpt:true,content:true,coverImageUrl:true,publishedAt:true}});}
   catch{return fallbackInsights.find(x=>x.slug===slug)??null;}
 }
+
+
+export type PublicService = {
+  id:string; slug:string; number:string; title:string; description:string;
+  capabilities:string|null; sortOrder:number; published:boolean;
+};
+
+const fallbackServices:PublicService[]=[
+  {id:"fallback-service-1",slug:"digital-products",number:"01",title:"Digital Products",description:"Websites, platforms and product experiences engineered for speed, clarity and conversion.",capabilities:"UX / UI|Frontend|Backend|CMS|Cloud",sortOrder:1,published:true},
+  {id:"fallback-service-2",slug:"ai-systems",number:"02",title:"AI Systems",description:"AI-powered products, automations and workflows designed around real business outcomes.",capabilities:"AI UX|Automation|Agents|Integrations",sortOrder:2,published:true},
+  {id:"fallback-service-3",slug:"brand-identity",number:"03",title:"Brand & Identity",description:"Distinctive visual systems that make technology brands feel human, premium and ownable.",capabilities:"Positioning|Identity|Art direction|Design systems",sortOrder:3,published:true},
+  {id:"fallback-service-4",slug:"3d-motion",number:"04",title:"3D & Motion",description:"Cinematic interfaces, motion systems and immersive visuals that give digital products a pulse.",capabilities:"Motion design|3D scenes|Creative code",sortOrder:4,published:true}
+];
+
+export async function getSiteSettings(){
+  try{
+    const data=await getPrisma().siteSetting.findUnique({where:{id:"main"}});
+    return data ?? {
+      id:"main",brandName:"TRANOS",tagline:"Digital / AI / Creative",
+      heroTitle:"Ideas into Digital Reality.",
+      heroDescription:"Tranos is an independent digital studio building premium experiences, intelligent systems and visual identities for ambitious teams.",
+      email:"hello@tranos.studio",location:"Tehran · Remote Worldwide",
+      footerNote:"Built for the next digital era.",linkedinUrl:null,instagramUrl:null,behanceUrl:null,dribbbleUrl:null,
+      defaultLocale:"en",defaultTheme:"dark"
+    };
+  }catch{
+    return {
+      id:"main",brandName:"TRANOS",tagline:"Digital / AI / Creative",
+      heroTitle:"Ideas into Digital Reality.",
+      heroDescription:"Tranos is an independent digital studio building premium experiences, intelligent systems and visual identities for ambitious teams.",
+      email:"hello@tranos.studio",location:"Tehran · Remote Worldwide",
+      footerNote:"Built for the next digital era.",linkedinUrl:null,instagramUrl:null,behanceUrl:null,dribbbleUrl:null,
+      defaultLocale:"en",defaultTheme:"dark"
+    };
+  }
+}
+
+export async function getPublicServices(){
+  try{
+    return await getPrisma().service.findMany({
+      where:{published:true},orderBy:[{sortOrder:"asc"},{createdAt:"asc"}]
+    });
+  }catch{return fallbackServices;}
+}
