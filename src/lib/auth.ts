@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
-import prisma from "@/lib/prisma";
+import getPrisma from "@/lib/prisma";
 
 const SESSION_COOKIE = "tranos_admin_session";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
@@ -10,6 +10,7 @@ function hashToken(token: string) {
 }
 
 export async function createAdminSession(userId: string) {
+  const prisma = getPrisma();
   const token = randomBytes(32).toString("hex");
   const tokenHash = hashToken(token);
   const expiresAt = new Date(Date.now() + SESSION_TTL_SECONDS * 1000);
@@ -29,6 +30,7 @@ export async function createAdminSession(userId: string) {
 }
 
 export async function getAdminSession() {
+  const prisma = getPrisma();
   const store = await cookies();
   const token = store.get(SESSION_COOKIE)?.value;
   if (!token) return null;
@@ -49,6 +51,7 @@ export async function getAdminSession() {
 }
 
 export async function destroyAdminSession() {
+  const prisma = getPrisma();
   const store = await cookies();
   const token = store.get(SESSION_COOKIE)?.value;
 
