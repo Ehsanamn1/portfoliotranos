@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import prisma from "@/lib/prisma";
+import getPrisma from "@/lib/prisma";
 import { createAdminSession } from "@/lib/auth";
 import { z } from "zod";
 
@@ -13,6 +13,7 @@ const loginSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const prisma = getPrisma();
   try {
     const body: unknown = await request.json();
     const parsed = loginSchema.safeParse(body);
