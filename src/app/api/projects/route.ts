@@ -11,14 +11,8 @@ export async function GET() {
       where: { published: true },
       orderBy: [{ featured: "desc" }, { sortOrder: "asc" }, { createdAt: "desc" }],
       select: {
-        id: true,
-        slug: true,
-        title: true,
-        description: true,
-        category: true,
-        year: true,
-        featured: true,
-        imageUrl: true
+        id:true,slug:true,title:true,description:true,category:true,year:true,featured:true,imageUrl:true,
+        clientName:true,role:true,challenge:true,solution:true,impact:true,technologies:true,galleryUrls:true
       }
     });
 
