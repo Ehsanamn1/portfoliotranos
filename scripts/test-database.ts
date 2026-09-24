@@ -1,7 +1,8 @@
 import "dotenv/config";
-import prisma from "../src/lib/prisma";
+import getPrisma from "../src/lib/prisma";
 
 async function main() {
+  const prisma = getPrisma();
   try {
     await prisma.$queryRawUnsafe("SELECT 1");
     console.log("Database connection: OK");
