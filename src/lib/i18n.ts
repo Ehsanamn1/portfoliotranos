@@ -54,7 +54,8 @@ export function isLocale(value:string):value is Locale{
 export async function getLocaleFromCookie(){
  try{
   const {cookies}=await import("next/headers");
-  const locale=cookies().get("tranos-locale")?.value;
+  const store=await cookies();
+  const locale=store.get("tranos-locale")?.value;
   return locale&&isLocale(locale)?locale:"en";
  }catch{return "en" as Locale;}
 }
