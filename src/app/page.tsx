@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { HeroVisual } from "./hero-visual";
 
 const services = [
   ["01", "Web Development", "Modern, scalable and high-performance web applications."],
@@ -26,6 +27,7 @@ export default function Home() {
   const [insights, setInsights] = useState<string[][]>(fallbackInsights);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState<string | null>(null);
+  const pageRef = useRef<HTMLElement | null>(null);
 
   async function handleContactSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -109,7 +111,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main id="top">
+      <main id="top" ref={pageRef}>
         <section className="hero">
           <div className="heroLeft">
             <div className="container heroIn">
@@ -121,14 +123,14 @@ export default function Home() {
                   <a className="btn primary" href="#work">Explore Our Work ↗</a>
                   <a className="btn" href="#about">Discover Tranos</a>
                 </div>
+                <div className="heroProof">
+                  <span>AI SYSTEMS</span><i /> <span>DIGITAL PRODUCTS</span><i /> <span>CREATIVE TECHNOLOGY</span>
+                </div>
                 <div className="scroll">Scroll Down ↓</div>
               </div>
             </div>
           </div>
-          <div className="scene" aria-hidden="true">
-            <div className="orb"><div className="core" /></div>
-            <div className="sceneLabel">TR / 01</div>
-          </div>
+          <HeroVisual />
         </section>
 
         <section className="section" id="work">
