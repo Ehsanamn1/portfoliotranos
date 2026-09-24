@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getAdminSession } from "@/lib/auth";
-import prisma from "@/lib/prisma";
+import getPrisma from "@/lib/prisma";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const prisma = getPrisma();
   try {
     const session = await getAdminSession();
 
