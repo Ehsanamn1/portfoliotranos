@@ -10,7 +10,8 @@ export default function SitePreferences(){
  useEffect(()=>{
   const savedTheme=localStorage.getItem("tranos-theme") as "dark"|"light"|null;
   const savedLocale=localStorage.getItem("tranos-locale") as Locale|null;
-  const nextTheme=savedTheme==="light"?"light":"dark";
+  const rootTheme=document.documentElement.dataset.theme==="light"?"light":"dark";
+  const nextTheme=savedTheme==="light"||savedTheme==="dark"?savedTheme:rootTheme;
   const nextLocale=savedLocale&&locales.includes(savedLocale)?savedLocale:"en";
   setTheme(nextTheme);setLocale(nextLocale);
   document.documentElement.dataset.theme=nextTheme;
