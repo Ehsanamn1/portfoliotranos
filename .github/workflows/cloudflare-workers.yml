@@ -52,7 +52,7 @@ jobs:
           fi
 
       - name: Apply database migrations and seed CMS
-        if: steps.cf.outputs.available == 'true' && env.DATABASE_URL != '' && env.ADMIN_PASSWORD != ''
+        if: steps.cf.outputs.available == 'true'
         shell: bash
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -60,6 +60,10 @@ jobs:
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
         run: |
           set -euo pipefail
+          if [ -z "${DATABASE_URL}" ] || [ -z "${ADMIN_PASSWORD}" ]; then
+            echo "::warning::DATABASE_URL or ADMIN_PASSWORD is unavailable; skipping CMS migration/seed."
+            exit 0
+          fi
           npx prisma migrate deploy
           npx prisma db seed
 
