@@ -32,7 +32,15 @@ export default function AdminDashboard({email}:{email:string}){
  useEffect(()=>{void load();},[]);
  const unread=useMemo(()=>messages.filter(x=>x.status==="NEW").length,[messages]);const publishedProjects=useMemo(()=>projects.filter(x=>x.published).length,[projects]);const publishedInsights=useMemo(()=>insights.filter(x=>x.published).length,[insights]);
  function newProject(){setProjectForm({id:"",slug:"",title:"",description:"",category:"Digital Product",year:new Date().getFullYear(),featured:false,published:true,imageUrl:"",clientName:"",role:"",challenge:"",solution:"",impact:"",technologies:"",galleryUrls:"",sortOrder:0});setTab("projects");}
- function editProject(x:Project){setProjectForm({...x,imageUrl:x.imageUrl||""});setTab("projects");window.scrollTo({top:0,behavior:"smooth"});}
+ function editProject(x:Project){
+  setProjectForm({
+    id:x.id,slug:x.slug,title:x.title,description:x.description,category:x.category,year:x.year,
+    featured:x.featured,published:x.published,imageUrl:x.imageUrl||"",clientName:x.clientName||"",role:x.role||"",
+    challenge:x.challenge||"",solution:x.solution||"",impact:x.impact||"",technologies:x.technologies||"",
+    galleryUrls:x.galleryUrls||"",sortOrder:x.sortOrder
+  });
+  setTab("projects");window.scrollTo({top:0,behavior:"smooth"});
+}
  async function saveProject(event:FormEvent){event.preventDefault();try{setBusy(true);const payload={...projectForm,slug:projectForm.slug||slugify(projectForm.title)};if(projectForm.id){await api(`/api/admin/projects/${projectForm.id}`,{method:"PATCH",body:JSON.stringify(payload)});setNotice("Project updated.");}else{await api("/api/admin/projects",{method:"POST",body:JSON.stringify(payload)});setNotice("Project created and synced to the public site.");}await load();newProject();}catch(error){setNotice(error instanceof Error?error.message:"Unable to save project.");}finally{setBusy(false);}}
  function newInsight(){setInsightForm({id:"",slug:"",title:"",excerpt:"",content:"",coverImageUrl:"",published:false,publishedAt:""});setTab("insights");}
  function editInsight(x:Insight){setInsightForm({id:x.id,slug:x.slug,title:x.title,excerpt:x.excerpt,content:x.content,coverImageUrl:x.coverImageUrl||"",published:x.published,publishedAt:x.publishedAt?new Date(x.publishedAt).toISOString().slice(0,16):""});setTab("insights");window.scrollTo({top:0,behavior:"smooth"});}
