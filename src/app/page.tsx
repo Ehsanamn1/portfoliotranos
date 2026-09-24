@@ -12,7 +12,7 @@ const process=[["01","Discover"],["02","Shape"],["03","Build"],["04","Evolve"]];
 
 export default async function Home(){
  const locale=await getLocaleFromCookie();
- const tr=<K extends keyof typeof import("@/lib/i18n").translations>(k:K)=>t(locale,k as any);
+ const tr=(key:Parameters<typeof t>[1])=>t(locale,key);
  const [projects,insights,services,settings]=await Promise.all([getPublicProjects(6),getPublicInsights(3),getPublicServices(),getSiteSettings()]);
  const heroTitle=locale==="en"?settings.heroTitle:tr("heroTitle");
  const heroDescription=locale==="en"?settings.heroDescription:tr("heroDescription");
