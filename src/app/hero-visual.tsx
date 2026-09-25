@@ -1,6 +1,6 @@
 "use client";
 
-import { PointerEvent, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type Point = {
   angle: number;
@@ -24,23 +24,20 @@ export function HeroVisual() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const points: Point[] = Array.from({ length: 84 }, (_, index) => {
-      const angle = (index / 84) * Math.PI * 2 + Math.sin(index * 1.91) * 0.25;
-      return {
-        angle,
-        radius: 78 + ((index * 37) % 185),
-        depth: 0.28 + ((index * 17) % 72) / 100,
-        speed: 0.00016 + ((index * 13) % 9) * 0.000018,
-        size: 0.7 + ((index * 11) % 12) / 10
-      };
-    });
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const points: Point[] = Array.from({ length: 58 }, (_, index) => ({
+      angle: (index / 58) * Math.PI * 2 + Math.sin(index * 1.91) * 0.25,
+      radius: 80 + ((index * 41) % 190),
+      depth: 0.28 + ((index * 17) % 72) / 100,
+      speed: 0.00012 + ((index * 13) % 9) * 0.000018,
+      size: 0.6 + ((index * 11) % 12) / 12
+    }));
 
-    let frame = 0;
     let animation = 0;
-    let width = 0;
-    let height = 0;
+    let width = 1;
+    let height = 1;
     let dpr = 1;
+    let lastTime = 0;
 
     const resize = () => {
       const rect = root.getBoundingClientRect();
@@ -55,58 +52,54 @@ export function HeroVisual() {
     };
 
     const draw = (time: number) => {
+      lastTime = time;
       ctx.clearRect(0, 0, width, height);
 
-      pointer.current.x += (pointer.current.targetX - pointer.current.x) * 0.055;
-      pointer.current.y += (pointer.current.targetY - pointer.current.y) * 0.055;
+      pointer.current.x += (pointer.current.targetX - pointer.current.x) * 0.06;
+      pointer.current.y += (pointer.current.targetY - pointer.current.y) * 0.06;
+
       if (orbRef.current) {
         orbRef.current.style.setProperty("--orb-x", pointer.current.x.toString());
         orbRef.current.style.setProperty("--orb-y", pointer.current.y.toString());
       }
 
-      const px = pointer.current.x * 18;
-      const py = pointer.current.y * 14;
-      const cx = width * 0.52 + px;
-      const cy = height * 0.48 + py;
-      const maxRadius = Math.min(width, height) * 0.48;
+      const cx = width * 0.51 + pointer.current.x * 14;
+      const cy = height * 0.49 + pointer.current.y * 12;
+      const maxRadius = Math.min(width, height) * 0.5;
 
       const atmosphere = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius);
-      atmosphere.addColorStop(0, "rgba(118,89,255,0.14)");
-      atmosphere.addColorStop(0.38, "rgba(45,212,206,0.035)");
+      atmosphere.addColorStop(0, "rgba(123,97,255,.15)");
+      atmosphere.addColorStop(.38, "rgba(57,214,207,.035)");
       atmosphere.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = atmosphere;
       ctx.fillRect(0, 0, width, height);
 
       ctx.save();
-      ctx.globalAlpha = 0.13;
-      ctx.strokeStyle = "rgba(255,255,255,0.14)";
+      ctx.globalAlpha = 0.1;
+      ctx.strokeStyle = "rgba(255,255,255,.18)";
       ctx.lineWidth = 1;
-      const grid = 64;
-      const skewX = pointer.current.x * 9;
-      const skewY = pointer.current.y * 7;
-
+      const grid = 58;
       for (let x = -grid; x < width + grid; x += grid) {
         ctx.beginPath();
-        ctx.moveTo(x + skewX, 0);
-        ctx.lineTo(x + skewX * 0.3, height);
+        ctx.moveTo(x + pointer.current.x * 8, 0);
+        ctx.lineTo(x + pointer.current.x * 2, height);
         ctx.stroke();
       }
-
       for (let y = -grid; y < height + grid; y += grid) {
         ctx.beginPath();
-        ctx.moveTo(0, y + skewY);
-        ctx.lineTo(width, y + skewY * 0.45);
+        ctx.moveTo(0, y + pointer.current.y * 6);
+        ctx.lineTo(width, y + pointer.current.y * 2);
         ctx.stroke();
       }
       ctx.restore();
 
       const positions = points.map((point, index) => {
         const drift = time * point.speed + index * 0.31;
-        const depthRadius = point.radius * (0.65 + point.depth * 0.5);
+        const depthRadius = point.radius * (.66 + point.depth * .46);
         return {
           x: cx + Math.cos(point.angle + drift) * depthRadius,
-          y: cy + Math.sin(point.angle + drift * 1.18) * depthRadius * 0.76,
-          size: point.size * (0.7 + point.depth * 0.6)
+          y: cy + Math.sin(point.angle + drift * 1.16) * depthRadius * .74,
+          size: point.size * (.72 + point.depth * .6)
         };
       });
 
@@ -116,19 +109,17 @@ export function HeroVisual() {
         const a = positions[i];
         for (let j = i + 1; j < positions.length; j++) {
           const b = positions[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const distance = Math.hypot(dx, dy);
-          if (distance < 74) {
-            ctx.strokeStyle = `rgba(118,89,255,${Math.max(0, 0.11 - distance / 900)})`;
-            ctx.lineWidth = 0.65;
+          const distance = Math.hypot(a.x - b.x, a.y - b.y);
+          if (distance < 68) {
+            ctx.strokeStyle = `rgba(123,97,255,${Math.max(0, .095 - distance / 900)})`;
+            ctx.lineWidth = .6;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
             ctx.stroke();
           }
         }
-        ctx.fillStyle = "rgba(244,242,238,0.48)";
+        ctx.fillStyle = "rgba(244,242,238,.5)";
         ctx.beginPath();
         ctx.arc(a.x, a.y, a.size, 0, Math.PI * 2);
         ctx.fill();
@@ -137,44 +128,51 @@ export function HeroVisual() {
 
       ctx.save();
       ctx.translate(cx, cy);
-      ctx.rotate(time * 0.00006);
-      [0.68, 0.86, 1.02].forEach((scale, index) => {
+      ctx.rotate(time * .00005);
+      [0.7, 0.88, 1.02].forEach((scale, index) => {
         ctx.save();
-        ctx.rotate(index * 0.9);
-        ctx.strokeStyle = index === 1 ? "rgba(213,176,108,0.52)" : "rgba(118,89,255,0.46)";
+        ctx.rotate(index * .85);
+        ctx.strokeStyle =
+          index === 1 ? "rgba(215,181,116,.5)" :
+          index === 2 ? "rgba(57,214,207,.28)" :
+          "rgba(123,97,255,.42)";
         ctx.lineWidth = 1;
-        ctx.setLineDash(index === 1 ? [7, 10] : [2, 9]);
+        ctx.setLineDash(index === 1 ? [8, 11] : [2, 9]);
         ctx.beginPath();
-        ctx.ellipse(0, 0, maxRadius * scale * 0.46, maxRadius * scale * 0.17, index * 0.55, 0, Math.PI * 2);
+        ctx.ellipse(
+          0, 0,
+          maxRadius * scale * .45,
+          maxRadius * scale * .16,
+          index * .55,
+          0,
+          Math.PI * 2
+        );
         ctx.stroke();
         ctx.restore();
       });
       ctx.restore();
 
-      ctx.save();
-      const pulse = 1 + Math.sin(time * 0.0012) * 0.03;
-      const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, 90 * pulse);
-      core.addColorStop(0, "rgba(210,196,255,0.5)");
-      core.addColorStop(0.2, "rgba(118,89,255,0.25)");
-      core.addColorStop(0.56, "rgba(45,212,206,0.06)");
+      const pulse = 1 + Math.sin(time * .0012) * .03;
+      const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, 100 * pulse);
+      core.addColorStop(0, "rgba(215,203,255,.5)");
+      core.addColorStop(.18, "rgba(123,97,255,.26)");
+      core.addColorStop(.55, "rgba(57,214,207,.05)");
       core.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = core;
       ctx.beginPath();
-      ctx.arc(cx, cy, 90 * pulse, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 100 * pulse, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
     };
 
     const tick = (time: number) => {
       draw(time);
-      if (!media.matches) animation = requestAnimationFrame(tick);
+      if (!reduceMotion.matches) animation = requestAnimationFrame(tick);
     };
 
-    const onResize = () => resize();
     const onPointerMove = (event: globalThis.PointerEvent) => {
       const rect = root.getBoundingClientRect();
-      pointer.current.targetX = (event.clientX - rect.left) / rect.width - 0.5;
-      pointer.current.targetY = (event.clientY - rect.top) / rect.height - 0.5;
+      pointer.current.targetX = (event.clientX - rect.left) / rect.width - .5;
+      pointer.current.targetY = (event.clientY - rect.top) / rect.height - .5;
     };
     const onPointerLeave = () => {
       pointer.current.targetX = 0;
@@ -184,47 +182,30 @@ export function HeroVisual() {
     resize();
     root.addEventListener("pointermove", onPointerMove);
     root.addEventListener("pointerleave", onPointerLeave);
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", resize);
 
-    if (media.matches) {
-      draw(0);
-    } else {
-      animation = requestAnimationFrame(tick);
-    }
+    if (reduceMotion.matches) draw(0);
+    else animation = requestAnimationFrame(tick);
 
     const onMotionChange = () => {
       cancelAnimationFrame(animation);
-      if (media.matches) {
-        draw(frame);
-      } else {
-        animation = requestAnimationFrame(tick);
-      }
+      if (reduceMotion.matches) draw(lastTime);
+      else animation = requestAnimationFrame(tick);
     };
 
-    media.addEventListener?.("change", onMotionChange);
+    reduceMotion.addEventListener?.("change", onMotionChange);
 
     return () => {
       cancelAnimationFrame(animation);
       root.removeEventListener("pointermove", onPointerMove);
       root.removeEventListener("pointerleave", onPointerLeave);
-      window.removeEventListener("resize", onResize);
-      media.removeEventListener?.("change", onMotionChange);
+      window.removeEventListener("resize", resize);
+      reduceMotion.removeEventListener?.("change", onMotionChange);
     };
   }, []);
 
-  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    pointer.current.targetX = (event.clientX - rect.left) / rect.width - 0.5;
-    pointer.current.targetY = (event.clientY - rect.top) / rect.height - 0.5;
-  }
-
   return (
-    <div
-      className="heroVisual"
-      ref={rootRef}
-      onPointerMove={handlePointerMove}
-      aria-hidden="true"
-    >
+    <div className="heroVisual" ref={rootRef} aria-hidden="true">
       <canvas ref={canvasRef} />
       <div className="visualScan" />
       <div className="visualVignette" />
@@ -245,7 +226,7 @@ export function HeroVisual() {
       </div>
       <div className="visualMeta visualMetaBottom">
         <span>AI / ACTIVE</span>
-        <span>PARALLAX 03D</span>
+        <span>PARALLAX / 03</span>
       </div>
       <div className="visualAxis axisX" />
       <div className="visualAxis axisY" />
