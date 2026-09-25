@@ -4,19 +4,14 @@ import { getLocaleFromCookie, localeMeta } from "@/lib/i18n";
 import MobileBottomNav from "@/components/mobile-bottom-nav";
 import { getSiteSettings } from "@/lib/public-data";
 import SitePreferences from "@/components/site-preferences";
+import MotionObserver from "@/components/motion-observer";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  "https://portfoliotranos.wandering-wedelia-b71.workers.dev";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://portfoliotranos.workers.dev";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: {
-    default: "Tranos Studio — Digital / AI / Creative",
-    template: "%s | Tranos Studio"
-  },
-  description:
-    "Tranos Studio builds premium digital products, AI systems, brand identities and cinematic digital experiences.",
+  title: { default: "Tranos Studio — Digital / AI / Creative", template: "%s | Tranos Studio" },
+  description: "Tranos Studio builds premium digital products, AI systems, brand identities and cinematic digital experiences.",
   applicationName: "Tranos Studio",
   keywords: ["Tranos", "AI studio", "digital studio", "creative technology", "digital products", "branding", "3D motion"],
   icons: { icon: "/favicon.svg" },
@@ -27,27 +22,18 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "Tranos Studio"
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Tranos Studio — Digital / AI / Creative",
-    description: "Premium digital products, intelligent systems and visual identities."
-  },
+  twitter: { card: "summary_large_image", title: "Tranos Studio — Digital / AI / Creative", description: "Premium digital products, intelligent systems and visual identities." },
   robots: { index: true, follow: true }
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocaleFromCookie();
   const settings = await getSiteSettings();
-
   return (
-    <html
-      lang={locale}
-      dir={localeMeta[locale].dir}
-      data-theme={settings.defaultTheme === "light" ? "light" : "dark"}
-      suppressHydrationWarning
-    >
+    <html lang={locale} dir={localeMeta[locale].dir} data-theme={settings.defaultTheme === "light" ? "light" : "dark"} suppressHydrationWarning>
       <body>
         {children}
+        <MotionObserver />
         <SitePreferences />
         <MobileBottomNav />
       </body>
